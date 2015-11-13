@@ -1,22 +1,59 @@
 // Author : dovahkiin
+import java.sql.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 
 public class MainActivity{
-	JButton bCustomer,bAdmin;
+	Connection con=null;
+	String URL="jdbc:mysql://localhost:3306/";
+	String dbName="MandarinSuperMarket";
+	String driver = "com.mysql.jdbc.Driver";
+	String userName = "aqeel";
+	String password = "ozil";
+	String q;
+	String c1,c2;
+	
+	private JButton bCustomer,bAdmin;
     private JLabel lWelcome;
 	private JLabel status;
-	JFrame frame;
-	JPanel controlPanel;
+	private JFrame frame;
+	private JPanel controlPanel;
 	
 	MainActivity() {
 		prepareGUI();
+		//DBconnect();
+		
+		
+		
+	}
+	
+	private void DBconnect() {
+		try {
+			Class.forName(driver).newInstance();
+			con=DriverManager.getConnection(URL+dbName,userName,password);
+			System.out.println("Connected to the database");
+			/*q="SELECT * FROM Category";
+			Statement stmt=con.createStatement();
+			ResultSet rs = stmt.executeQuery(q);
+			while (rs.next())
+			{
+			c1 = rs.getString(1);
+			c2 = rs.getString(2);
+			System.out.print(c1+" ");
+			System.out.println(c2);
+			} 
+			con.close(); */
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
 	private void prepareGUI() {
+		//DBconnect();
 		frame=new JFrame("MANDARIN SUPERMARKET");
 		//FlowLayout fl=new FlowLayout();
 		//setLayout(fl);
@@ -42,10 +79,13 @@ public class MainActivity{
 	    controlPanel.add(status);
 		//frame.add(controlPanel);
 		//frame.setVisible(true);
+	    // DBconnect();
+	  
 	
 	}
 	
 	private void welcomePage() {
+		DBconnect();
 		bCustomer=new JButton("Customer Purchase");
 		bCustomer.addActionListener(new ButtonClickListener());
 		//add(bCustomer);
@@ -75,9 +115,13 @@ public class MainActivity{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			CustomerWindow cw;
 			action=e.getActionCommand();
-			if(action == "Customer")
+			if(action == "Customer") {
 				status.setText("Welcome Customer");
+				cw=new CustomerWindow();
+				
+			}
 			else
 				status.setText("Welcome Admin");
 
